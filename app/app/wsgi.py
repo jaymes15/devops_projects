@@ -16,5 +16,3 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kreditafrica.settings")
 
 application = get_wsgi_application()
 application = WhiteNoise(application, root="vol/web/static")
-
-

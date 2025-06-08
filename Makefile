@@ -72,3 +72,9 @@ check-isort:
 .PHONY: collectstatic
 collectstatic:
 	docker-compose run --rm api sh -c "python manage.py collectstatic"
+
+.PHONY: black black-check
+
+# Format code with black
+black:
+	black .

@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2          # ✅ Checkout must happen before using local actions
-      - uses: ./.github/actions/setup-env  # 👈 Now this works
+        uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-env
       - name: Run tests
         run: make test
 
