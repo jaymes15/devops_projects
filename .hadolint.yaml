@@ -1,0 +1,12 @@
+ignored:
+  - DL3008  # Pin versions in apt-get install
+  - DL3013  # Pin versions in pip
+  - DL3015  # Avoid additional packages by specifying --no-install-recommends
+  - DL3018  # Pin versions in apk add
+  - DL3025  # Use arguments JSON notation for CMD and ENTRYPOINT arguments
+  - DL3042  # Avoid use of cache directory with pip
+  - DL3059  # Multiple consecutive `RUN` instructions
+  - DL4001  # Either use Wget or Curl but not both
+  - DL4006  # Set the SHELL option -o pipefail before RUN with a pipe in
+  - SC1091  # Not following: source
+  - SC2086  # Double quote to prevent globbing and word splitting 

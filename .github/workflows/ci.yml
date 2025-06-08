@@ -1,42 +1,50 @@
----
 name: Continuous Integration
 
 on:
   push:
     branches:
       - develop
+      - main
   pull_request: []
 
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
-      - name: Test
-        run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
+      - uses: ./.github/actions/setup-env
+      - name: Run tests
+        run: make test
 
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
-      - name: Lint
-        run: docker compose run --rm app sh -c "flake8"
-  
+      - uses: ./.github/actions/setup-env
+      - name: Run linter
+        run: make lint
+
   isort:
     name: Isort
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
-      - name: Isort
-        run: docker compose run --rm app sh -c "isort --check-only ."
+      - uses: ./.github/actions/setup-env
+      - name: Check isort
+        run: make check-isort
+
+  hadolint:
+    name: Run Hadolint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
