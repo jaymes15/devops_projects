@@ -63,6 +63,11 @@ install:
 isort:
 	docker-compose run --rm api sh -c "isort ."
 
+# Check sort imports
+.PHONY: check-isort
+check-isort:
+	docker-compose run --rm api sh -c "isort --check-only ."
+
 # Collect static files
 .PHONY: collectstatic
 collectstatic:
