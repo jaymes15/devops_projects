@@ -1,10 +1,10 @@
----
 name: Continuous Integration
 
 on:
   push:
     branches:
       - develop
+      - main
   pull_request: []
 
 jobs:
@@ -12,10 +12,7 @@ jobs:
     name: Test
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
+      - uses: ./.github/actions/setup-env
       - name: Test
         run: make test
 
@@ -23,20 +20,14 @@ jobs:
     name: Lint
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
+      - uses: ./.github/actions/setup-env
       - name: Lint
         run: make lint
-  
+
   isort:
     name: Isort
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Make Env file
-        run: mv .sample.build.env .env
+      - uses: ./.github/actions/setup-env
       - name: Isort
         run: make check-isort
