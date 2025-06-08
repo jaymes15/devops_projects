@@ -12,22 +12,28 @@ jobs:
     name: Test
     runs-on: ubuntu-24.04
     steps:
-      - uses: ./.github/actions/setup-env
-      - name: Test
+      - name: Checkout
+        uses: actions/checkout@v2          # ✅ Checkout must happen before using local actions
+      - uses: ./.github/actions/setup-env  # 👈 Now this works
+      - name: Run tests
         run: make test
 
   lint:
     name: Lint
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - uses: ./.github/actions/setup-env
-      - name: Lint
+      - name: Run linter
         run: make lint
 
   isort:
     name: Isort
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - uses: ./.github/actions/setup-env
-      - name: Isort
+      - name: Check isort
         run: make check-isort
