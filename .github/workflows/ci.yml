@@ -7,30 +7,13 @@ on:
     branches: [develop, main]
 
 jobs:
+  setup:
+    uses: ./.github/workflows/setup_ci_env.yml
+
   build:
     name: Build Docker Image
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Make Env file
-        run: mv .sample.build.env .env
-        shell: bash
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker-container  # ✅ REQUIRED for cache export
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Build and cache Docker image
         uses: docker/build-push-action@v5
         with:
