@@ -25,7 +25,7 @@ def health_check(request):
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
-    except Exception as e:
+    except Exception as _:
         health_status["database"] = "error"
         health_status["status"] = "unhealthy"
 
