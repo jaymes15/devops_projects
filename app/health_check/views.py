@@ -37,5 +37,5 @@ def health_check(request):
         health_status["media_files"] = "not configured"
         health_status["status"] = "unhealthy"
 
-    status_code = 200 if health_status["status"] == "healthy" else 503
+    status_code = 200 if health_status["status"] == "healthz" else 503
     return JsonResponse(health_status, status=status_code)
