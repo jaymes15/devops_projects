@@ -1,4 +1,3 @@
-# .github/actions/setup-docker/action.yml
 name: 'Setup Docker Environment'
 description: 'Sets up Docker Buildx and cache for builds'
 inputs:
