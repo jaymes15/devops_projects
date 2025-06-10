@@ -4,6 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.db import connection
 from django.conf import settings
 
+
 @require_http_methods(["GET"])
 def health_check(request):
     """
@@ -18,7 +19,7 @@ def health_check(request):
         "database": "connected",
         "static_files": "configured",
         "media_files": "configured",
-        "debug_mode": settings.DEBUG
+        "debug_mode": settings.DEBUG,
     }
 
     try:
@@ -27,11 +28,11 @@ def health_check(request):
     except Exception as e:
         health_status["database"] = "error"
         health_status["status"] = "unhealthy"
-    
+
     if not settings.STATIC_URL or not settings.STATIC_ROOT:
         health_status["static_files"] = "not configured"
         health_status["status"] = "unhealthy"
-    
+
     if not settings.MEDIA_URL or not settings.MEDIA_ROOT:
         health_status["media_files"] = "not configured"
         health_status["status"] = "unhealthy"
