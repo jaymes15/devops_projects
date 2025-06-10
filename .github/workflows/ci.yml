@@ -7,18 +7,32 @@ on:
     branches: [develop, main]
 
 jobs:
-  setup:
-    name: Setup CI Env
-    uses: ./.github/workflows/setup_ci_env.yml
-
   build:
     name: Build Docker Image
-    needs: setup
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Make Env file
+        run: mv .sample.build.env .env
+        shell: bash
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container  # ✅ REQUIRED for cache export
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build and cache Docker image
         uses: docker/build-push-action@v5
-     
         with:
           context: .
           load: true
@@ -26,42 +40,43 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
+      # Move cache to avoid growing cache size indefinitely
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  # Uncomment and modify these jobs as needed
   # test:
   #   name: Test
-  #   needs: setup
+  #   needs: build
   #   runs-on: ubuntu-24.04
   #   steps:
-  #     - name: Setup env
-  #       uses: ./.github/actions/setup-env/action.yml  
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Make Env file
+  #       run: mv .sample.build.env .env
   #     - name: Run tests
   #       run: make test
 
   # lint:
   #   name: Lint
-  #   needs: setup
+  #   needs: build
   #   runs-on: ubuntu-24.04
   #   steps:
-  #     - name: Setup env
-  #       uses: ./.github/actions/setup-env/action.yml
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Make Env file
+  #       run: mv .sample.build.env .env
   #     - name: Run linter
   #       run: make lint
-
-  # isort:
-  #   name: Isort
-  #   needs: setup
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - name: Setup env
-  #       uses: ./.github/actions/setup-env/action.yml
-  #     - name: Check isort
-  #       run: make check-isort
 
   # hadolint:
   #   name: Run Hadolint
   #   runs-on: ubuntu-24.04
   #   steps:
   #     - name: Checkout
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v4
   #     - name: Run Hadolint
   #       uses: hadolint/hadolint-action@v3.1.0
   #       with:
