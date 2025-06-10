@@ -7,9 +7,7 @@ on:
     branches: [develop, main]
 
 jobs:
-  setup:
-    uses: ./.github/actions/setup-env/action.yml
-
+  
   build:
     name: Build Docker Image
     needs: setup
@@ -17,6 +15,8 @@ jobs:
     steps:
       - name: Build and cache Docker image
         uses: docker/build-push-action@v5
+      - name: Setup env
+        uses: ./.github/actions/setup-env/action.yml
         with:
           context: .
           load: true
@@ -29,6 +29,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-24.04
     steps:
+      - name: Setup env
+        uses: ./.github/actions/setup-env/action.yml  
       - name: Run tests
         run: make test
 
@@ -37,6 +39,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-24.04
     steps:
+      - name: Setup env
+        uses: ./.github/actions/setup-env/action.yml
       - name: Run linter
         run: make lint
 
@@ -45,6 +49,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-24.04
     steps:
+      - name: Setup env
+        uses: ./.github/actions/setup-env/action.yml
       - name: Check isort
         run: make check-isort
 
