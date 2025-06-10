@@ -4,26 +4,21 @@ from django.views.decorators.http import require_http_methods
 from django.db import connection
 from django.conf import settings
 
-import gc
-
-big_data_holder = []
-
 @require_http_methods(["GET"])
 def health_check(request):
     """
-    Modified health check that simulates memory load.
+    Health check endpoint that verifies the basic functionality of the service.
+    Checks:
+    - Database connectivity
+    - Static files configuration
+    - Media files configuration
     """
-
-    global big_data_holder
-    big_data_holder.extend([bytearray(10 * 1024 * 1024)] * 5)  # ~50MB per request
-
     health_status = {
         "status": "healthy",
         "database": "connected",
         "static_files": "configured",
         "media_files": "configured",
-        "debug_mode": settings.DEBUG,
-        "memory_chunks": len(big_data_holder)
+        "debug_mode": settings.DEBUG
     }
 
     try:
