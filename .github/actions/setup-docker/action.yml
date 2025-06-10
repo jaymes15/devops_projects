@@ -8,9 +8,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
     - name: Make Env file
       run: mv .sample.build.env .env
       shell: bash
@@ -19,6 +16,11 @@ runs:
       uses: docker/setup-buildx-action@v3
       with:
         driver: docker-container
+
+    - name: Install Docker Compose
+      uses: ndeloof/install-compose-action@v0.0.1
+      with:
+        version: v2.23.3
 
     - name: Cache Docker layers
       uses: actions/cache@v4
