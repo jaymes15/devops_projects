@@ -1,27 +1,39 @@
-name: Setup CI Env
+# .github/actions/setup-docker/action.yml
+name: 'Setup Docker Environment'
+description: 'Sets up Docker Buildx and cache for builds'
+inputs:
+  load-image:
+    description: 'Whether to load the cached Docker image'
+    required: false
+    default: 'false'
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Make Env file
+      run: mv .sample.build.env .env
+      shell: bash
 
-on: workflow_call
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        driver: docker-container
 
-jobs:
-  setup:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4  # Updated to v4
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
 
-      - name: Make Env file
-        run: mv .sample.build.env .env
-        shell: bash
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker-container  # ✅ REQUIRED for cache export
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4  # Updated to v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+    - name: Load cached Docker image
+      if: inputs.load-image == 'true'
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        load: true
+        tags: app:latest
+        cache-from: type=local,src=/tmp/.buildx-cache

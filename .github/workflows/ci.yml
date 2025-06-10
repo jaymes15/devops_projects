@@ -7,63 +7,62 @@ on:
     branches: [develop, main]
 
 jobs:
-  # setup:
-  #   uses: ./.github/workflows/setup_ci_env.yml
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
 
-  # build:
-  #   name: Build Docker Image
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+      - name: Build and cache Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: app:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-  #     - name: Setup env
-  #       uses: ./.github/workflows/setup_ci_env.yml
-
-  #     - name: Build and cache Docker image
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: .
-  #         load: true
-  #         tags: app:latest
-  #         cache-from: type=local,src=/tmp/.buildx-cache
-  #         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-  #     # Move cache to avoid growing cache size indefinitely
-  #     - name: Move cache
-  #       run: |
-  #         rm -rf /tmp/.buildx-cache
-  #         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        shell: bash
 
   test:
     name: Test
+    needs: build
     runs-on: ubuntu-24.04
     steps:
-      - name: Setup env
-        uses: ./.github/workflows/setup_ci_env.yml
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
+
       - name: Run tests
         run: make test
 
-  # lint:
-  #   name: Lint
-  #   needs: build
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Make Env file
-  #       run: mv .sample.build.env .env
-  #     - name: Run linter
-  #       run: make lint
+  lint:
+    name: Lint
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
 
-  # hadolint:
-  #   name: Run Hadolint
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Run Hadolint
-  #       uses: hadolint/hadolint-action@v3.1.0
-  #       with:
-  #         dockerfile: Dockerfile
+      - name: Run linter
+        run: make lint
+
+  hadolint:
+    name: Run Hadolint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
