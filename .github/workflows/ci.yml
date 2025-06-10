@@ -8,7 +8,7 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflows/setup-env.yml
+    uses: ./.github/actions/setup-env/action.yml
 
   build:
     name: Build Docker Image
