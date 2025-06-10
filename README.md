@@ -17,7 +17,7 @@ Written with [Django](https://www.djangoproject.com/) and [DRF](https://www.djan
  - Change directory to the project directory 
  - Run:
     ```bash
-        docker-compose up
+    docker-compose up
     ```
   - The application would be available at http://127.0.0.1:8000
 
