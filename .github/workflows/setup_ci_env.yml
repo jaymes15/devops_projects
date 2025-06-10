@@ -1,4 +1,4 @@
-name: Setup Env
+name: Setup CI Env
 
 on: workflow_call
 
