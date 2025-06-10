@@ -7,15 +7,15 @@ on:
     branches: [develop, main]
 
 jobs:
-  
+  setup:
+    name: Setup CI Env
+    uses: ./.github/workflows/setup_ci_env.yml
+
   build:
     name: Build Docker Image
-    # needs: setup
+    needs: setup
     runs-on: ubuntu-24.04
     steps:
-      - name: Setup env
-        uses: ./.github/workflows/setup_ci_env.yml
-
       - name: Build and cache Docker image
         uses: docker/build-push-action@v5
      
