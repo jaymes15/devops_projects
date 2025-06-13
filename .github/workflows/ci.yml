@@ -75,3 +75,33 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
+  
+  dockle:
+    name: Run Dockle
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
+      - name: Run Dockle
+        run: make dockle
+
+  trivy:
+    name: Trivy
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
+
+      - name: Run Trivy
+        run: make trivy

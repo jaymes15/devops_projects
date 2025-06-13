@@ -84,6 +84,22 @@ black:
 hadolint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
+# Run Trivy
+.PHONY: trivy
+trivy:
+	docker run --rm -it aquasec/trivy:0.44.1 -f json -o trivy-report.json .
+
+# Run Dockle
+.PHONY: dockle
+dockle:
+	docker run --rm \
+	  -v /var/run/docker.sock:/var/run/docker.sock \
+	  goodwithtech/dockle:0.4.15 \
+	  --exit-code 1 \
+	  --exit-level warn \
+	  app:latest
+
+
 # Run all checks
 .PHONY: check-all
 check-all: hadolint black isort lint test
