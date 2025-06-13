@@ -84,21 +84,25 @@ black:
 hadolint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-# Run Trivy
+# Run Trivy vulnerability scan
 .PHONY: trivy
 trivy:
-	docker run --rm -it aquasec/trivy:0.44.1 -f json -o trivy-report.json .
+	docker run --rm -v $(PWD):/workspace \
+		aquasec/trivy:0.44.1 \
+		image --format json --output /workspace/trivy-report.json \
+		app:latest
 
-# Run Dockle
+# Run Dockle security scan
 .PHONY: dockle
 dockle:
 	docker run --rm \
-	  -v /var/run/docker.sock:/var/run/docker.sock \
-	  goodwithtech/dockle:0.4.15 \
-	  --exit-code 1 \
-	  --exit-level warn \
-	  app:latest
-
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		goodwithtech/dockle:latest \
+		--exit-code 1 \
+		--exit-level warn \
+		--format json \
+		--output dockle-report.json \
+		app:latest
 
 # Run all checks
 .PHONY: check-all
