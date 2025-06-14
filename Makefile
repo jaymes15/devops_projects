@@ -95,8 +95,9 @@ dockle:
 		docker build -t app:latest .; \
 	fi
 	docker save app:latest -o app.tar
-	docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest \
-		--input /app.tar \
-		-af settings.py 
-	rm -f app.tar
+	@OUTPUT=$$(docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest --input /app.tar -af settings.py); \
+	echo "$$OUTPUT"; \
+	echo "$$OUTPUT" | grep -q "FATAL" && { echo "Dockle found fatal issues! Failing..."; rm -f app.tar; exit 1; } || { rm -f app.tar; exit 0; }
+
+
 

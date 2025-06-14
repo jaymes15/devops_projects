@@ -1,8 +1,8 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.db import connection
 from django.conf import settings
+from django.db import connection
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 
 
 @require_http_methods(["GET"])
