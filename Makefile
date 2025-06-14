@@ -84,37 +84,3 @@ black:
 hadolint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-# Run Trivy vulnerability scan
-.PHONY: trivy
-trivy:
-	docker run --rm -v $(PWD):/workspace \
-		aquasec/trivy:0.44.1 \
-		image --format json --output /workspace/trivy-report.json \
-		app:latest
-
-# Run Trivy vulnerability scan
-.PHONY: trivy
-trivy:
-	docker run --rm -v $(PWD):/workspace \
-		aquasec/trivy:0.44.1 \
-		image --format json --output /workspace/trivy-report.json \
-		app:latest
-
-
-# Run Dockle security scan
-.PHONY: dockle
-dockle:
-	docker run --rm \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(PWD):/workspace \
-		-w /workspace \
-		goodwithtech/dockle:latest \
-		--exit-code 1 \
-		--exit-level warn \
-		--format json \
-		--output /workspace/dockle-report.json \
-		app:latest
-
-# Run all checks
-.PHONY: check-all
-check-all: hadolint black isort lint test

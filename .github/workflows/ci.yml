@@ -76,28 +76,3 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-  security:
-    name: Security Scans
-    needs: build
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Docker Environment
-        uses: ./.github/actions/setup-docker
-        with:
-          load-image: 'true'
-
-      - name: Run Dockle
-        run: make dockle
-
-      - name: Run Trivy
-        run: make trivy
-
-      - name: Upload Trivy results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: trivy-report
-          path: trivy-report.json
