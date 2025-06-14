@@ -84,3 +84,19 @@ black:
 hadolint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
+
+
+# Run Dockle
+.PHONY: dockle
+is_ci ?= true
+dockle:
+	@if [ "$(is_ci)" = "false" ]; then \
+		echo "Building Docker image..."; \
+		docker build -t app:latest .; \
+	fi
+	docker save app:latest -o app.tar
+	docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest \
+		--input /app.tar \
+		-af settings.py 
+	rm -f app.tar
+

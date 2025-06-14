@@ -159,3 +159,4 @@ dmypy.json
 *.box
 
 # End of https://www.toptal.com/developers/gitignore/api/python,vagrant
+**/.DS_Store

@@ -1,0 +1,5 @@
+# Ignore suspicious filenames
+AF=settings.py
+
+# Ignore CIS check for Docker Content Trust
+AK=CIS-DI-0005

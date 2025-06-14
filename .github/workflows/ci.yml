@@ -92,8 +92,5 @@ jobs:
           load-image: 'true'
 
       - name: Run Dockle
-        run: |
-          docker save app:latest -o app.tar
-          docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest --input /app.tar
-        shell: bash
+        run: make dockle is_ci=true
         

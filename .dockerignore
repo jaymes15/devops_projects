@@ -1,3 +1,8 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
 # Git
 .git
 .gitignore
@@ -42,7 +47,6 @@ venv.bak/
 .vscode/
 *.swp
 *.swo
-.DS_Store
 
 # Docker
 .docker/
@@ -66,5 +70,6 @@ yarn-error.log
 *.bak
 *.tmp
 *.temp
-.DS_Store
 Thumbs.db 
+app/.vscode
+**/.DS_Store
