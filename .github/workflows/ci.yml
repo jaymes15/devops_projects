@@ -76,7 +76,7 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-  scan:
+  dockle:
     name: Run Dockle
     needs: build
     runs-on: ubuntu-24.04

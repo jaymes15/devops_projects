@@ -97,6 +97,6 @@ dockle:
 	docker save app:latest -o app.tar
 	docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest \
 		--input /app.tar \
-		-af settings.py 
+		
 	rm -f app.tar
 
