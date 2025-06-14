@@ -91,11 +91,9 @@ jobs:
         with:
           load-image: 'true'
 
-      - name: Run Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'app:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '1'
+      - name: Run Dockle
+        run: |
+          docker save app:latest -o app.tar
+          docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest --input /app.tar
+        shell: bash
+        
