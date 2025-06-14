@@ -84,6 +84,3 @@ black:
 hadolint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-# Run all checks
-.PHONY: check-all
-check-all: hadolint black isort lint test

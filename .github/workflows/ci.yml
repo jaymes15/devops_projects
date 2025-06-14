@@ -2,49 +2,77 @@ name: Continuous Integration
 
 on:
   push:
-    branches:
-      - develop
-      - main
-  pull_request: []
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
 
 jobs:
-  test:
-    name: Test
+  build:
+    name: Build Docker Image
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - uses: ./.github/actions/setup-env
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+
+      - name: Build and cache Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: app:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        shell: bash
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
+
       - name: Run tests
         run: make test
 
   lint:
     name: Lint
+    needs: build
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - uses: ./.github/actions/setup-env
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        uses: ./.github/actions/setup-docker
+        with:
+          load-image: 'true'
+
       - name: Run linter
         run: make lint
-
-  isort:
-    name: Isort
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: ./.github/actions/setup-env
-      - name: Check isort
-        run: make check-isort
 
   hadolint:
     name: Run Hadolint
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
+
