@@ -92,7 +92,7 @@ jobs:
           load-image: 'true'
 
       - name: Run Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@v0.31.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           image-ref: 'app:latest'
           format: 'sarif'
