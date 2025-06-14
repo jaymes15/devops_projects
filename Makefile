@@ -95,8 +95,11 @@ dockle:
 		docker build -t app:latest .; \
 	fi
 	docker save app:latest -o app.tar
-	docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest \
-		--input /app.tar \
-		
-	rm -f app.tar
+	-docker run --rm -v ${PWD}/app.tar:/app.tar:ro goodwithtech/dockle:latest \
+		--input /app.tar; \
+		EXIT_CODE=$$?; \
+	rm -f app.tar; \
+	exit $$EXIT_CODE
+
+
 

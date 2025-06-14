@@ -78,7 +78,7 @@ jobs:
           load-image: 'true'
 
       - name: Run Import Sort
-        run: make isort
+        run: make check-isort
 
   hadolint:
     name: Run Hadolint
