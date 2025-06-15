@@ -2,7 +2,7 @@ name: CI Container Pipeline
 
 on:
   workflow_run:
-    workflows: ["Continuous Integration"]
+    workflows: ["Continuous Integration Checks"]
     branches: [develop,main]
     types:
       - completed
