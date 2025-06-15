@@ -1,4 +1,4 @@
-name: CI Container Pipeline
+name: CI Container Pipeline (Container Build and Push)
 
 on:
   workflow_run:
